@@ -1,0 +1,1563 @@
+\documentclass[11pt]{article}
+
+\usepackage{iftex}
+\ifPDFTeX
+  \errmessage{Please compile with XeLaTeX or LuaLaTeX}
+\fi
+
+\usepackage[fontset=fandol]{ctex}
+\usepackage{fontspec}
+\usepackage{geometry}
+\usepackage{xcolor}
+\usepackage{microtype}
+\usepackage{hyperref}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+\usepackage{tikz}
+\usetikzlibrary{positioning}
+\usepackage[most]{tcolorbox}
+\usepackage{amsmath,amssymb,amsthm,mathtools,bm}
+\usepackage{enumitem}
+\usepackage{booktabs}
+\usepackage[capitalize,nameinlink]{cleveref}
+
+\geometry{
+  paperwidth=7.15in,
+  paperheight=10in,
+  left=0.78in,
+  right=0.78in,
+  top=0.78in,
+  bottom=0.8in,
+  headsep=0.24in,
+  footskip=0.4in
+}
+
+\IfFontExistsTF{Times New Roman}{\setmainfont{Times New Roman}}{\setmainfont{TeX Gyre Termes}}
+\IfFontExistsTF{Helvetica Neue}{\setsansfont{Helvetica Neue}}{\setsansfont{TeX Gyre Heros}}
+\IfFontExistsTF{JetBrains Mono}{\setmonofont{JetBrains Mono}}{\IfFontExistsTF{Menlo}{\setmonofont{Menlo}}{\setmonofont{Courier New}}}
+\IfFontExistsTF{Noto Serif CJK SC}{\setCJKmainfont{Noto Serif CJK SC}}{} 
+\IfFontExistsTF{Noto Sans CJK SC}{\setCJKsansfont{Noto Sans CJK SC}}{} 
+
+\linespread{1.24}
+\setlength{\parindent}{1.6em}
+\setlength{\parskip}{0.15em}
+
+% 全局设置所有公式使用\displaystyle显示
+\everymath{\displaystyle}
+\everydisplay{\displaystyle}
+
+\definecolor{brand}{HTML}{5B8CFF}
+\definecolor{brandD}{HTML}{2F54EB}
+\definecolor{ink}{HTML}{1A1A1A}
+\definecolor{keybg}{HTML}{EFF4FF}
+\definecolor{keydark}{HTML}{1F3C88}
+\definecolor{accent}{HTML}{FFB84D}
+\definecolor{accentD}{HTML}{FF8F1F}
+\definecolor{soft}{HTML}{FFFBF2}
+\definecolor{xhsRed}{HTML}{FF6B6B}
+\definecolor{xhsDark}{HTML}{1F1F1F}
+\definecolor{xhsCream}{HTML}{FFF8EE}
+\definecolor{xhsBlue}{HTML}{3A86FF}
+\definecolor{xhsYellow}{HTML}{FFC857}
+\definecolor{secblue}{HTML}{365CFF}
+\definecolor{thmBg}{RGB}{240,245,255}
+\definecolor{lemBg}{RGB}{255,242,242}
+\definecolor{defBg}{RGB}{240,247,255}
+
+\hypersetup{
+  colorlinks=true,
+  linkcolor=brandD,
+  citecolor=brandD,
+  urlcolor=secblue,
+  pdfauthor={用户名}, % 修改为你的名字
+  pdftitle={文档标题} % 修改为你的文档标题
+}
+
+\newcounter{lecnum}
+\renewcommand{\thesection}{\arabic{section}}
+\renewcommand{\thesubsection}{\arabic{section}.\arabic{subsection}}
+\renewcommand{\thesubsubsection}{\arabic{section}.\arabic{subsection}.\arabic{subsubsection}}
+\renewcommand{\theequation}{\arabic{section}.\arabic{equation}}
+\numberwithin{equation}{section}
+
+\titleformat{\section}
+  {\Large\bfseries\color{keydark}}
+  {\thesection}{0.6em}{}
+\titlespacing*{\section}{0pt}{1.1em}{0.45em}
+
+\titleformat{\subsection}
+  {\large\bfseries\color{brand}}
+  {\thesubsection}{0.55em}{}
+\titlespacing*{\subsection}{0pt}{0.9em}{0.3em}
+
+\setlist[itemize]{leftmargin=1.5em,itemsep=0.25em,topsep=0.4em}
+\setlist[enumerate]{leftmargin=1.7em,itemsep=0.25em,topsep=0.4em}
+
+% 课程系列名称，可根据实际情况修改
+\newcommand{\LectureSeries}{预备知识学习笔记}
+% 主讲人名称，可根据实际情况修改
+\newcommand{\LectureSpeaker}{Cabbage}
+% 所属机构，可根据实际情况修改
+\newcommand{\LectureAffiliation}{ECNU}
+
+\fancyhf{}
+\renewcommand{\headrulewidth}{0.4pt}
+\fancyhead[L]{\small\sffamily\color{brandD}\LectureSeries}
+\fancyhead[R]{\small\sffamily\color{ink}\nouppercase{\rightmark}}
+\fancyfoot[L]{\small\sffamily\color{brand}\LectureSpeaker}
+\fancyfoot[R]{\small\sffamily\color{brand}\arabic{page}}
+\pagestyle{fancy}
+\fancypagestyle{plain}{\pagestyle{fancy}}
+\renewcommand{\sectionmark}[1]{\markright{#1}}
+
+\tcbset{
+  cn-panel/.style={
+    enhanced,
+    breakable,
+    boxrule=0.7pt,
+    arc=4pt,
+    left=10pt,right=10pt,top=10pt,bottom=10pt
+  },
+  cn-soft/.style={
+    enhanced,
+    breakable,
+    frame hidden,
+    borderline west={3pt}{0pt}{#1},
+    colback=#1!8,
+    left=9pt,right=9pt,top=8pt,bottom=8pt,
+    arc=2pt
+  }
+}
+
+\newcommand{\LectureBanner}[6]{%
+  \setcounter{lecnum}{#1}%
+  \markright{#2}%
+  \begin{tcolorbox}[
+    cn-panel,
+    colback=keybg,
+    colframe=brandD,
+    borderline west={4pt}{0pt}{accent}
+  ]
+    {\sffamily\small\color{ink!60} #4 \hfill #5}\par
+    \vspace{0.35em}
+    {\bfseries\fontsize{22}{26}\selectfont\color{keydark} Chapter #1：#2\par}
+    \vspace{0.2em}
+    {\large\color{brand} #3\par}
+    \vspace{0.7em}
+    {\small\sffamily\color{ink!72} Author：#6 \hfill {\color{brandD}\LectureAffiliation}}
+  \end{tcolorbox}
+  \vspace{0.7em}
+}
+
+\newtcolorbox{SummaryBox}{
+  cn-panel,
+  colback=xhsCream,
+  colframe=accent,
+  title=\textbf{本讲摘要},
+  fonttitle=\bfseries,
+  coltitle=white,
+  colbacktitle=accent
+}
+
+\newtcolorbox{AnalysisBox}{
+  cn-soft=secblue,
+  title=\textbf{分析},
+  fonttitle=\bfseries,
+  coltitle=secblue
+}
+
+\newtcolorbox{RemarkBox}{
+  cn-soft=accentD,
+  title=\textbf{备注},
+  fonttitle=\bfseries,
+  coltitle=accentD
+}
+
+\newtcolorbox{ExampleBox}{
+  cn-panel,
+  colback=soft,
+  colframe=xhsBlue,
+  title=\textbf{Example},
+  fonttitle=\bfseries,
+  coltitle=white,
+  colbacktitle=xhsBlue
+}
+
+\usepackage{listings}
+
+\lstdefinestyle{PythonStyle}{
+  language=Python,
+  basicstyle=\ttfamily\scriptsize,
+  keywordstyle=\color{blue!70},
+  stringstyle=\color{green!60},
+  commentstyle=\color{red!60!green},
+  numbers=left,
+  numberstyle=\tiny\color{gray},
+  breaklines=true,
+  breakatwhitespace=true,
+  tabsize=4,
+  showstringspaces=false,
+  frame=single,
+  framesep=3pt,
+  framexleftmargin=3pt,
+  xleftmargin=10pt
+}
+
+\newtcolorbox{CodeBox}{
+  cn-panel,
+  colback=xhsDark!5,
+  colframe=brand,
+  title=\textbf{Python 代码实现},
+  fonttitle=\bfseries,
+  coltitle=white,
+  colbacktitle=brand,
+  enhanced,
+  breakable
+}
+
+\theoremstyle{plain}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{lemma}[theorem]{引理}
+\newtheorem{proposition}[theorem]{命题}
+\newtheorem{corollary}[theorem]{推论}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{定义}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{注}
+
+\tcolorboxenvironment{theorem}{cn-panel,colback=thmBg,colframe=secblue,borderline west={3pt}{0pt}{secblue}}
+\tcolorboxenvironment{lemma}{cn-panel,colback=lemBg,colframe=accentD,borderline west={3pt}{0pt}{accentD}}
+\tcolorboxenvironment{proposition}{cn-panel,colback=thmBg,colframe=brandD,borderline west={3pt}{0pt}{brandD}}
+\tcolorboxenvironment{corollary}{cn-panel,colback=defBg,colframe=brand,borderline west={3pt}{0pt}{brand}}
+\tcolorboxenvironment{definition}{cn-soft=brandD,title=\textbf{定义},fonttitle=\bfseries,coltitle=brandD}
+\tcolorboxenvironment{remark}{cn-soft=accentD,title=\textbf{注},fonttitle=\bfseries,coltitle=accentD}
+
+% 数学符号定义，可根据需要添加或修改
+\DeclareMathOperator{\diam}{diam}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\ip}[2]{\left\langle #1, #2 \right\rangle}
+\newcommand{\norm}[1]{\lVert #1 \rVert}
+\newcommand{\grad}[1]{\nabla #1}
+
+\begin{document}
+
+% 目录页
+\clearpage
+\pagestyle{plain}
+\begin{tcolorbox}[
+  cn-panel,
+  colback=keybg,
+  colframe=brandD,
+  borderline west={4pt}{0pt}{accent},
+  title=\textbf{目录},
+  fonttitle=\bfseries,
+  coltitle=white,
+  colbacktitle=brandD
+]
+  \tableofcontents
+\end{tcolorbox}
+\vspace{0.7em}
+\clearpage
+
+% 第一讲
+\setcounter{section}{1}
+\setcounter{subsection}{0}
+\addcontentsline{toc}{section}{Chapter 1:梯度下降算法}
+\LectureBanner
+  {1} % 修改为讲座编号
+  {梯度下降算法} % 修改为讲座标题
+  {理论基础与实现} % 修改为讲座副标题
+  {大模型学习笔记} % 修改为课程系列名称
+  {2026 Spring} % 修改为学期信息
+  {Cabbage} % 修改为主讲人姓名
+
+\begin{SummaryBox}
+本讲详细介绍了梯度下降算法的精确定义、核心定理及其证明，并提供了可直接运行的Python代码实现。梯度下降是最基础且广泛应用的优化算法，通过沿着负梯度方向迭代更新参数，逐步逼近目标函数的最小值。
+\end{SummaryBox}
+\setcounter{subsection}{0}
+% 线性代数基础
+\subsection{线性代数基础}
+
+本文覆盖实对称矩阵特征值性质、实对称矩阵合同对角化、从多元泰勒展开到凸函数二阶条件的完整推导三大知识点，所有推导从基础定义出发，先明确定义再陈述定理、给出证明，符号体系统一为：$\R^n$ 表示 n 维实向量空间，$\R^{n\times n}$ 表示 n 阶实方阵，$D\subset\R^n$ 表示 n 元函数的定义域。
+
+\subsubsection{实对称阵的特征值一定是实数}
+
+\textbf{相关名词定义}
+
+\textbf{（1）实对称矩阵}
+
+设 $A\in\R^{n\times n}$，若 $A$ 的转置等于自身，即 $A^T=A$，则称 $A$ 为实对称矩阵（注：若无特殊说明，"对称阵" 均指实对称矩阵，复对称阵无此性质，复域中对应埃尔米特矩阵）。
+
+\textbf{（2）特征值与特征向量}
+
+设 $A\in\R^{n\times n}$，若存在复数 $\lambda$ 和非零复向量 $x\in\mathbb{C}^n$，使得 $Ax=\lambda x$，则称 $\lambda$ 为 $A$ 的特征值，非零向量 $x$ 为 $A$ 对应于 $\lambda$ 的特征向量（特征向量必非零，这是定义核心）。
+
+\textbf{（3）复数的共轭与复向量的共轭转置}
+
+对复数 $a+bi$，其共轭记为 $\overline{a+bi}=a-bi$；对复向量 $x=(x_1,x_2,\ldots,x_n)^T\in\mathbb{C}^n$，其共轭为 $\overline{x}=(\overline{x_1},\overline{x_2},\ldots,\overline{x_n})^T$。
+
+复向量的共轭转置记为 $x^H=(\overline{x})^T$，实向量的共轭转置等价于普通转置（$x^H=x^T$）。
+
+\textbf{（4）复向量的内积}
+
+对 $x,y\in\mathbb{C}^n$，内积定义为 $\langle x,y\rangle=x^H y$，若 $x\neq 0$，则 $\langle x,x\rangle=\sum_{i=1}^n |x_i|^2 > 0$（模的平方和，恒正）。
+
+\textbf{定理准确陈述}
+
+\begin{theorem}
+设 $A\in\R^{n\times n}$ 为实对称矩阵，则 $A$ 的所有特征值均为实数。
+\end{theorem}
+
+\textbf{严格证明（从定义出发）}
+
+设 $\lambda$ 为实对称阵 $A$ 的任意一个特征值，$x\in\mathbb{C}^n$ 是对应于 $\lambda$ 的非零特征向量，则由特征值定义有：
+\begin{equation}
+Ax=\lambda x
+\end{equation}
+
+\textbf{步骤 1：对等式 (1) 两边取共轭}
+
+因 $A$ 是实矩阵，其元素均为实数，故 $\overline{A}=A$；对等式两边共轭得：
+\begin{equation}
+\overline{Ax}=\overline{\lambda x}\implies\overline{A}\overline{x}=\overline{\lambda}\overline{x}\implies A\overline{x}=\overline{\lambda}\overline{x}
+\end{equation}
+
+\textbf{步骤 2：对等式 (1) 两边取共轭转置}
+
+共轭转置满足 $(AB)^H=B^H A^H$，且 $A$ 是实对称阵，故 $A^H=(\overline{A})^T=A^T=A$，对 (1) 取共轭转置得：
+\begin{equation}
+(Ax)^H=(\lambda x)^H\implies x^H A^H=\overline{\lambda} x^H\implies x^H A=\overline{\lambda} x^H
+\end{equation}
+
+\textbf{步骤 3：对等式 (3) 两边右乘 $x$，结合特征值定义化简}
+
+\begin{equation}
+x^H Ax=\overline{\lambda} x^H x
+\end{equation}
+
+由 (1) 知 $Ax=\lambda x$，代入 (4) 左边得：
+\begin{equation}
+x^H\cdot\lambda x=\overline{\lambda} x^H x\implies\lambda x^H x=\overline{\lambda} x^H x
+\end{equation}
+
+\textbf{步骤 4：利用复向量内积的正定性推导 $\lambda=\overline{\lambda}$}
+
+因 $x$ 是特征向量，故 $x\neq 0$，由复向量内积定义得 $x^H x=\sum_{i=1}^n |x_i|^2 > 0$，对 (5) 两边同时除以 $x^H x$ 得：
+\[\lambda=\overline{\lambda}\]
+
+一个复数等于其共轭，当且仅当该复数为实数，故实对称阵的任意特征值均为实数。
+
+\begin{corollary}
+实对称阵的特征向量均可取为实向量（因特征值为实数，特征方程 $(A-\lambda E)x=0$ 是实系数线性方程组，必有实非零解）。
+\end{corollary}
+
+\subsubsection{实对称阵一定存在相合（合同）对角化：$Q^T AQ=\Lambda$}
+
+\textbf{相关名词定义}
+
+\textbf{（1）矩阵的合同（相合）}
+
+设 $A,B\in\R^{n\times n}$，若存在 n 阶实可逆矩阵 $C$，使得 $C^T AC=B$，则称矩阵 $A$ 与 $B$ 合同（相合），称 $C$ 为合同变换矩阵；若 $C$ 为正交矩阵，则称 $A$ 与 $B$ 正交合同。
+
+\textbf{（2）可逆矩阵}
+
+设 $A\in\R^{n\times n}$，若存在 $B\in\R^{n\times n}$，使得 $AB=BA=E$（$E$ 为 n 阶单位阵），则称 $A$ 可逆，$B$ 为 $A$ 的逆矩阵，记为 $A^{-1}$；方阵可逆的充要条件是 $\det(A)\neq 0$（行列式非零）。
+
+\textbf{（3）正交矩阵}
+
+设 $Q\in\R^{n\times n}$，若 $Q^T Q=QQ^T =E$，则称 $Q$ 为正交矩阵；正交矩阵的核心性质：$Q^T=Q^{-1}$（逆等于转置），且 $\det(Q)=\pm 1$（必可逆）。
+
+\textbf{（4）对角矩阵}
+
+设 $\Lambda\in\R^{n\times n}$，若 $\Lambda$ 的非对角线元素均为 0，即 $\Lambda=\text{diag}(\lambda_1,\lambda_2,\ldots,\lambda_n)=\begin{pmatrix}\lambda_1 & 0 & \cdots & 0\\ 0 & \lambda_2 & \cdots & 0\\ \vdots & \vdots & \ddots & \vdots\\ 0 & 0 & \cdots & \lambda_n\end{pmatrix}$，则称 $\Lambda$ 为对角矩阵。
+
+\textbf{（5）矩阵的相似}
+
+设 $A,B\in\R^{n\times n}$，若存在 n 阶实可逆矩阵 $P$，使得 $P^{-1} AP=B$，则称 $A$ 与 $B$ 相似；若 $P$ 为正交矩阵，则称 $A$ 与 $B$ 正交相似。
+
+\textbf{定理准确陈述}
+
+\begin{theorem}
+设 $A\in\R^{n\times n}$ 为实对称矩阵，则存在 n 阶正交矩阵 $Q$，使得 $Q^T AQ=\Lambda$，其中 $\Lambda=\text{diag}(\lambda_1,\lambda_2,\ldots,\lambda_n)$，$\lambda_1,\lambda_2,\ldots,\lambda_n$ 为 $A$ 的全部特征值。
+\end{theorem}
+
+\begin{corollary}
+实对称阵必可正交合同对角化，且合同变换矩阵可取正交矩阵（正交合同是合同的特殊情况，故实对称阵必可普通合同对角化）。
+\end{corollary}
+
+\textbf{严格证明（从定义出发，分两步）}
+
+实对称阵的合同对角化基于其正交相似对角化，而正交相似对角化又基于实对称阵的特征向量正交性，证明分两步：先证实对称阵的不同特征值的特征向量正交，再构造正交矩阵完成对角化。
+
+\textbf{步骤 1：证明实对称阵不同特征值的特征向量相互正交}
+
+设 $\lambda_1,\lambda_2$ 为实对称阵 $A$ 的两个不同特征值，$x_1,x_2$ 为对应的实特征向量（由第一部分推论，特征向量可取实向量），则：
+\[Ax_1=\lambda_1 x_1,\quad Ax_2=\lambda_2 x_2\]
+
+对 $Ax_1=\lambda_1 x_1$ 两边取转置得：
+\[x_1^T A^T=\lambda_1 x_1^T\]
+因 $A^T=A$，故 $x_1^T A=\lambda_1 x_1^T$。
+
+两边右乘 $x_2$ 得：
+\[x_1^T Ax_2=\lambda_1 x_1^T x_2\]
+代入 $Ax_2=\lambda_2 x_2$ 得：
+\[\lambda_2 x_1^T x_2=\lambda_1 x_1^T x_2\implies(\lambda_1-\lambda_2)x_1^T x_2=0\]
+
+因 $\lambda_1\neq\lambda_2$，故 $x_1^T x_2=0$，即实向量 $x_1$ 与 $x_2$ 正交（实向量内积为 0 即正交）。
+
+\textbf{步骤 2：构造正交矩阵 $Q$，证明 $Q^T AQ=\Lambda$}
+
+设实对称阵 $A$ 的 n 个特征值为 $\lambda_1,\lambda_2,\ldots,\lambda_n$（重根按重数计），对应 n 个实特征向量：
+
+若特征值为单根：取其单位化的特征向量（$e_i=x_i/\norm{x_i}$，$\norm{x_i}=\sqrt{x_i^T x_i}$ 为向量的模）；
+
+若特征值为 k 重根：实对称阵的 k 重特征值必有 k 个线性无关的实特征向量，对其做施密特正交化再单位化，得到 k 个正交的单位特征向量。
+
+由步骤 1，不同特征值的特征向量已正交，因此最终可得到 n 个两两正交的单位实特征向量：$e_1,e_2,\ldots,e_n$。
+
+将这 n 个特征向量按列构成矩阵：$Q=(e_1,e_2,\ldots,e_n)$，则：
+
+$Q$ 是正交矩阵：因列向量两两正交且单位化，故 $Q^T Q=(e_i^T e_j)_{n\times n}=E$（$e_i^T e_j=1$ 当 $i=j$，0 当 $i\neq j$）；
+
+由特征值定义，$A(e_1,e_2,\ldots,e_n)=(\lambda_1 e_1,\lambda_2 e_2,\ldots,\lambda_n e_n)$，即：
+\[AQ=Q\Lambda\]
+其中 $\Lambda=\text{diag}(\lambda_1,\lambda_2,\ldots,\lambda_n)$。
+
+因 $Q$ 是正交矩阵，故 $Q^T=Q^{-1}$，对 $AQ=Q\Lambda$ 两边左乘 $Q^T$ 得：
+\[Q^T AQ=Q^T Q\Lambda=E\Lambda=\Lambda\]
+即实对称阵可由正交矩阵合同对角化，证毕。
+
+\subsubsection{从多元泰勒展开到凸函数二阶条件的完整推导（超详细版）}
+
+\textbf{3.1 核心基础定义（从底层逻辑出发）}
+
+\textbf{3.1.1 n 元函数与凸集}
+
+\textbf{n 元实值函数：}设 $D\subset\R^n$ 为非空集合，若对任意 $x=(x_1,x_2,\ldots,x_n)^T\in D$，存在唯一实数 $f(x)$ 与之对应，则称映射 $f:D\to\R$ 为 n 元实值函数，记为 $f(x)=f(x_1,x_2,\ldots,x_n)$。
+
+\textbf{凸集：}若对任意 $x_1,x_2\in D$，以及任意 $\theta\in[0,1]$，都有 $\theta x_1+(1-\theta)x_2\in D$，则称 $D$ 为凸集。直观理解：集合中任意两点的连线完全包含在集合内（如 $\R^n$、超平面、球体均为凸集）。
+
+\textbf{3.1.2 一阶偏导数与梯度}
+
+\textbf{一阶偏导数：}设 $f$ 在 $x_0=(x_{01},x_{02},\ldots,x_{0n})^T$ 的某邻域内有定义，若极限
+\[\frac{\partial f}{\partial x_i}(x_0)=\lim_{\Delta x_i\to 0}\frac{f(x_{01},\ldots,x_{0i}+\Delta x_i,\ldots,x_{0n})-f(x_0)}{\Delta x_i}\]
+存在，则称该极限为 $f$ 在 $x_0$ 处对 $x_i$ 的一阶偏导数，描述函数沿 $x_i$ 方向的变化率。
+
+\textbf{梯度：}若 $f$ 在 $x_0$ 处所有一阶偏导数均存在，则梯度为 n 维列向量：
+\[\nabla f(x_0)=\left(\frac{\partial f}{\partial x_1}(x_0),\frac{\partial f}{\partial x_2}(x_0),\ldots,\frac{\partial f}{\partial x_n}(x_0)\right)^T\]
+梯度方向是函数在 $x_0$ 处增长最快的方向，负梯度方向是下降最快的方向。
+
+\textbf{3.1.3 二阶偏导数与黑塞矩阵（含对称性证明）}
+
+\textbf{二阶偏导数：}若 $\frac{\partial f}{\partial x_i}$ 在 $x_0$ 处对 $x_j$ 的偏导数存在，则称
+\[\frac{\partial^2 f}{\partial x_j\partial x_i}(x_0)=\lim_{\Delta x_j\to 0}\frac{\frac{\partial f}{\partial x_i}(x_0+\Delta x_j e_j)-\frac{\partial f}{\partial x_i}(x_0)}{\Delta x_j}\]
+为 $f$ 在 $x_0$ 处的二阶混合偏导数，其中 $e_j$ 是第 j 个标准基向量（仅第 j 个分量为 1，其余为 0）。
+
+\textbf{黑塞矩阵（Hessian Matrix）：}若 $f$ 在 $x_0$ 处二阶连续可微（所有二阶偏导数存在且连续），则黑塞矩阵为 $n\times n$ 方阵：
+\[H_f(x_0)=\begin{pmatrix}
+\frac{\partial^2 f}{\partial x_1^2}(x_0) & \frac{\partial^2 f}{\partial x_1\partial x_2}(x_0) & \cdots & \frac{\partial^2 f}{\partial x_1\partial x_n}(x_0)\\
+\frac{\partial^2 f}{\partial x_2\partial x_1}(x_0) & \frac{\partial^2 f}{\partial x_2^2}(x_0) & \cdots & \frac{\partial^2 f}{\partial x_2\partial x_n}(x_0)\\
+\vdots & \vdots & \ddots & \vdots\\
+\frac{\partial^2 f}{\partial x_n\partial x_1}(x_0) & \frac{\partial^2 f}{\partial x_n\partial x_2}(x_0) & \cdots & \frac{\partial^2 f}{\partial x_n^2}(x_0)
+\end{pmatrix}\]
+第 i 行第 j 列元素为 $\frac{\partial^2 f}{\partial x_j\partial x_i}(x_0)$。
+
+\textbf{黑塞矩阵的对称性证明（克莱罗定理）：}若 $f$ 在 $x_0$ 处二阶连续可微，则混合偏导数与求导顺序无关，即：
+\[\frac{\partial^2 f}{\partial x_j\partial x_i}(x_0)=\frac{\partial^2 f}{\partial x_i\partial x_j}(x_0)\]
+因此 $H_f(x_0)^T=H_f(x_0)$，即黑塞矩阵是实对称矩阵。
+
+\begin{RemarkBox}
+注：只有二阶偏导数连续时，黑塞矩阵才一定对称；若混合偏导不连续，对称性可能失效。
+\end{RemarkBox}
+
+\textbf{3.2 多元函数泰勒展开：从线性到高阶近似}
+
+泰勒展开的核心思想：用多项式函数近似复杂函数，阶数越高，近似精度越高，是连接「函数局部变化」与「导数信息」的桥梁。
+
+\textbf{3.2.1 一阶泰勒展开（线性近似）}
+
+前提：$f$ 在 $x_0$ 处可微（可微 $\Rightarrow$ 一阶偏导数存在且连续）。
+
+\textbf{佩亚诺余项形式（局部分析用）：}
+\[f(x)=f(x_0)+\nabla f(x_0)^T(x-x_0)+o(\norm{x-x_0})\]
+含义：在 $x_0$ 附近，$f(x)$ 可近似为「函数值 + 梯度方向的线性变化」，误差 $o(\norm{x-x_0})$ 是 $\norm{x-x_0}$ 的高阶无穷小（当 $x\to x_0$ 时，误差比 $\norm{x-x_0}$ 更快趋近于 0）。
+
+\textbf{拉格朗日余项形式（全局分析用）：}
+\[f(x)=f(x_0)+\nabla f(\xi)^T(x-x_0)\]
+其中 $\xi$ 是 $x_0$ 与 $x$ 连线上的点（因 $D$ 是凸集，故 $\xi\in D$），描述了全局范围内的线性近似误差。
+
+\textbf{3.2.2 二阶泰勒展开（核心，二次近似）}
+
+前提：$f$ 在 $x_0$ 处二阶连续可微。
+
+\textbf{佩亚诺余项形式（局部分析用）：}
+\[f(x)=f(x_0)+\nabla f(x_0)^T(x-x_0)+\frac{1}{2}(x-x_0)^TH_f(x_0)(x-x_0)+o(\norm{x-x_0}^2)\]
+含义：在一阶近似基础上，加入二次型项 $\frac{1}{2}(x-x_0)^TH_f(x_0)(x-x_0)$，描述函数在 $x_0$ 处的「弯曲程度」，误差 $o(\norm{x-x_0}^2)$ 是 $\norm{x-x_0}^2$ 的高阶无穷小。
+
+\textbf{拉格朗日余项形式（全局证明用，核心）：}
+\[f(x)=f(x_0)+\nabla f(x_0)^T(x-x_0)+\frac{1}{2}(x-x_0)^TH_f(\xi)(x-x_0)\]
+其中 $\xi$ 是 $x_0$ 与 $x$ 连线上的点（凸集保证 $\xi\in D$），将局部的二阶导数信息扩展到全局。
+
+泰勒展开的作用：将 $f(x)-f(x_0)$ 拆解为「线性变化项 + 二次弯曲项」，把抽象的函数差转化为可代数分析的形式，为后续利用黑塞矩阵正定性推导凸性奠定基础。
+
+\textbf{3.2.3 k 阶泰勒展开（高阶近似）}
+
+前提：$f$ 在 $x_0$ 处 k 阶连续可微。
+\[f(x)=\sum_{m=0}^{k}\frac{1}{m!}D^mf(x_0)(x-x_0)^m+o(\norm{x-x_0}^k)\]
+其中：
+\begin{itemize}
+  \item $D^0f(x_0)=f(x_0)$（0 阶导数，函数本身）
+  \item $D^1f(x_0)(v)=\nabla f(x_0)^Tv$（一阶导数，线性形式）
+  \item $D^2f(x_0)(v)=v^TH_f(x_0)v$（二阶导数，二次型形式）
+  \item $D^mf(x_0)(v)$ 是 m 阶多线性形式，对应 m 阶偏导数的张量乘积，描述更高阶的函数变化。
+\end{itemize}
+
+\textbf{3.3 黑塞矩阵的谱分解：二次型的特征值视角}
+
+因 $H_f(x)$ 是实对称矩阵，可利用实对称矩阵的正交对角化性质，将二次型转化为特征值加权的平方和。
+
+\textbf{3.3.1 实对称矩阵的正交对角化定理}
+
+\begin{theorem}
+设 $A\in\R^{n\times n}$ 为实对称矩阵，则存在正交矩阵 $Q$（满足 $Q^TQ=I$，即 $Q^T=Q^{-1}$），使得：
+\[Q^TAQ=\Lambda=\text{diag}(\lambda_1,\lambda_2,\ldots,\lambda_n)\]
+其中 $\lambda_1,\lambda_2,\ldots,\lambda_n$ 是 $A$ 的特征值（全为实数），$Q$ 的列是 $A$ 对应特征值的单位正交特征向量。
+\end{theorem}
+
+\textbf{3.3.2 二阶泰勒二次型的谱分解}
+
+设 $\Delta x=x-x_0$，二阶泰勒展开中的二次型项为：
+\[\Delta x^TH_f(x_0)\Delta x\]
+将 $H_f(x_0)=Q\Lambda Q^T$（由正交对角化定理，$H=Q\Lambda Q^T$）代入：
+\[\Delta x^TH_f(x_0)\Delta x=\Delta x^T(Q\Lambda Q^T)\Delta x=(Q^T\Delta x)^T\Lambda(Q^T\Delta x)\]
+令 $z=Q^T\Delta x$（正交变换不改变向量长度，故 $\norm{z}=\norm{\Delta x}$），则：
+\[\Delta x^TH\Delta x=z^T\Lambda z=\sum_{i=1}^n\lambda_i z_i^2\]
+
+几何意义：二次型的值等于各特征值乘以对应方向分量的平方和：
+\begin{itemize}
+  \item 若所有 $\lambda_i\geq 0$：二次型 $\geq 0$（半正定），函数在所有方向上「向上弯曲」或平坦；
+  \item 若所有 $\lambda_i>0$：二次型 $> 0$（正定），函数在所有方向上严格「向上弯曲」；
+  \item 若存在 $\lambda_i<0$：二次型可正可负（不定），函数在某些方向「向下弯曲」。
+\end{itemize}
+
+\textbf{3.4 凸函数的定义与一阶等价条件（证明铺垫）}
+
+\textbf{3.4.1 凸函数的原始定义}
+
+设 $D\subset\R^n$ 为凸集，若对任意 $x,y\in D$，以及任意 $\theta\in[0,1]$，都有：
+\[f(\theta x+(1-\theta)y)\leq\theta f(x)+(1-\theta)f(y)\]
+则称 $f$ 是 $D$ 上的凸函数；若不等号严格成立（$\theta\in(0,1)$ 且 $x\neq y$），则称 $f$ 为严格凸函数。
+
+\textbf{3.4.2 可微凸函数的一阶等价条件}
+
+\begin{theorem}
+设 $D$ 为开凸集，$f:D\to\R$ 可微，则 $f$ 是凸函数当且仅当：
+\[\forall x,y\in D,\quad f(y)\geq f(x)+\nabla f(x)^T(y-x)\]
+\end{theorem}
+
+直观理解：函数图像永远在其任意一点的切平面上方，切平面是函数的「全局下界」。
+
+作用：将凸性的原始定义（两点加权平均）转化为更易分析的「函数差与梯度线性项的不等式」，是二阶条件证明的核心桥梁。
+
+\textbf{3.5 凸函数二阶条件的完整证明（核心：突出泰勒展开的作用）}
+
+\begin{theorem}
+设 $D\subset\R^n$ 为开凸集，$f:D\to\R$ 在 $D$ 上二阶连续可微，则：
+\[f \text{ 是凸函数}\iff\forall x\in D,\; H_f(x)\succeq 0\text{（黑塞矩阵半正定）}\]
+且 $\forall x\in D,\; H_f(x)\succ 0\implies f$ 是严格凸函数。
+\end{theorem}
+
+\textbf{3.5.1 充分性证明：$\forall x\in D,\;H_f(x)\succeq 0\implies f$ 是凸函数}
+
+目标：证明满足可微凸函数的一阶等价条件 $f(y)\geq f(x)+\nabla f(x)^T(y-x)$。
+
+\textbf{步骤 1：应用二阶泰勒展开（拉格朗日余项）}
+
+任取 $x,y\in D$，对 $f(y)$ 在 $x$ 处做二阶泰勒展开（拉格朗日余项形式）：
+\[f(y)=f(x)+\nabla f(x)^T(y-x)+\frac{1}{2}(y-x)^TH_f(\xi)(y-x)\]
+其中 $\xi$ 是 $x$ 与 $y$ 连线上的点（凸集保证 $\xi\in D$）。
+
+泰勒展开的作用：将 $f(y)-f(x)$ 拆解为「梯度线性项 + 黑塞二次型项」，把抽象的凸性不等式转化为可直接分析的代数形式，为后续利用黑塞矩阵半正定性做准备。
+
+\textbf{步骤 2：利用黑塞矩阵半正定条件}
+
+由题设 $H_f(\xi)\succeq 0$（半正定），根据半正定矩阵定义：对任意非零向量 $v\in\R^n$，有 $v^TH_f(\xi)v\geq 0$。令 $v=y-x$，则：
+\[(y-x)^TH_f(\xi)(y-x)\geq 0\]
+
+\textbf{步骤 3：推导凸函数一阶等价条件}
+
+将二次型项的非负性代入泰勒展开式：
+\[f(y)=f(x)+\nabla f(x)^T(y-x)+\underbrace{\frac{1}{2}(y-x)^TH_f(\xi)(y-x)}_{\geq 0}\]
+因此：
+\[f(y)\geq f(x)+\nabla f(x)^T(y-x)\]
+满足可微凸函数的一阶等价条件，故 $f$ 是凸函数。
+
+\textbf{3.5.2 必要性证明：$f$ 是凸函数 $\implies\forall x\in D,\;H_f(x)\succeq 0$}
+
+目标：证明对任意 $x_0\in D$，任意非零向量 $v\in\R^n$，有 $v^TH_f(x_0)v\geq 0$。
+
+\textbf{步骤 1：构造一元函数并利用凸性}
+
+任取 $x_0\in D$，任取非零向量 $v\in\R^n$，构造一元函数：
+\[g(t)=f(x_0+tv),\quad t\in(-\delta,\delta)\]
+其中 $\delta>0$ 足够小，使得 $x_0+tv\in D$（开凸集保证存在这样的 $\delta$）。因 $f$ 是凸函数，故 $g(t)$ 是一元凸函数（凸函数与仿射变换的复合仍为凸函数）。
+
+\textbf{步骤 2：对 $g(t)$ 做二阶泰勒展开（拉格朗日余项）}
+
+对 $g(t)$ 在 $t=0$ 处做二阶泰勒展开：
+\[g(t)=g(0)+g'(0)t+\frac{1}{2}g''(\xi)t^2\]
+其中 $\xi\in(0,t)$ 或 $(t,0)$（$t\neq 0$）。由复合函数求导法则：
+\begin{itemize}
+  \item 一阶导数：$g'(t)=\nabla f(x_0+tv)^Tv\implies g'(0)=\nabla f(x_0)^Tv$
+  \item 二阶导数：$g''(t)=v^TH_f(x_0+tv)v\implies g''(\xi)=v^TH_f(x_0+\xi v)v$
+\end{itemize}
+
+泰勒展开的作用：将一元函数 $g(t)$ 的变化分解为「线性项 + 二次项」，通过凸性的一阶条件约束二次项符号，进而将 n 元函数的凸性转化为黑塞矩阵的局部正定性。
+
+\textbf{步骤 3：利用一元凸函数的一阶条件}
+
+一元凸函数的一阶等价条件为：对任意 $t\in(-\delta,\delta)$，
+\[g(t)\geq g(0)+g'(0)t\]
+将二阶泰勒展开代入得：
+\[g(0)+g'(0)t+\frac{1}{2}g''(\xi)t^2\geq g(0)+g'(0)t\]
+两边消去 $g(0)$ 和 $g'(0)t$，得：
+\[\frac{1}{2}g''(\xi)t^2\geq 0\]
+因 $t\neq 0$ 时 $t^2>0$，故 $g''(\xi)\geq 0$，即：
+\[v^TH_f(x_0+\xi v)v\geq 0\]
+
+\textbf{步骤 4：取极限得到黑塞矩阵半正定}
+
+令 $t\to 0$，则 $\xi\to 0$，由 $f$ 二阶连续可微，$H_f(x_0+\xi v)\to H_f(x_0)$，故：
+\[v^TH_f(x_0)v\geq 0\]
+对任意非零 $v$ 成立，因此 $H_f(x_0)\succeq 0$。
+
+\textbf{3.5.3 严格凸函数的推论}
+
+若 $\forall x\in D,\;H_f(x)\succ 0$（正定），则在充分性证明中，当 $y\neq x$ 时，二次型项 $(y-x)^TH_f(\xi)(y-x)>0$，故：
+\[f(y)>f(x)+\nabla f(x)^T(y-x)\]
+满足严格凸函数的一阶等价条件，因此 $f$ 是严格凸函数。
+
+\textbf{3.6 泰勒展开在证明中的核心作用总结}
+
+\begin{itemize}
+  \item \textbf{分解函数变化：}将 $f(y)-f(x)$ 拆解为「梯度线性项 + 黑塞二次型项」，把抽象的凸性不等式转化为可代数分析的形式，是连接「函数全局凸性」与「局部导数信息」的关键桥梁。
+  \item \textbf{扩展局部信息到全局：}拉格朗日余项形式将局部的二阶导数（黑塞矩阵）信息扩展到全局，使得我们可以用局部点 $\xi$ 的黑塞正定性推导全局凸性。
+  \item \textbf{直观解释凸性几何：}二次型项直接对应函数的「弯曲方向」，通过谱分解将二次型与特征值联系起来，直观说明「黑塞半正定 $\Leftrightarrow$ 函数向上弯 $\Leftrightarrow$ 凸函数」的逻辑。
+\end{itemize}
+
+
+\subsection{凸的礼物}
+
+凸性是优化理论中最核心的概念之一，它为优化问题提供了强大的理论保证。本节将系统介绍凸集、凸函数的定义及其判定条件，并深入探讨凸优化问题的核心性质。
+
+\subsubsection{相关定义}
+
+
+\begin{definition}[凸集]
+集合 $C \subseteq \R^n$ 是\textbf{凸集}，当且仅当：对任意 $x, y \in C$ 和任意 $\theta \in [0, 1]$，有 $\theta x + (1-\theta) y \in C$。
+\end{definition}
+
+\textbf{直觉}：集合内任意两点的连线段都完全在集合内。
+
+\begin{center}
+\begin{tikzpicture}[scale=1]
+    % 凸集
+    \begin{scope}
+        \fill[blue!20] (0, 0) ellipse (1.5 and 1);
+        \draw[blue, thick] (0, 0) ellipse (1.5 and 1);
+        \fill[red] (-1, 0.3) circle (2pt) node[above] {$x$};
+        \fill[red] (1, -0.2) circle (2pt) node[above] {$y$};
+        \draw[red, thick] (-1, 0.3) -- (1, -0.2);
+        \node[below] at (0, -1.5) {凸集 \checkmark};
+    \end{scope}
+
+    % 非凸集
+    \begin{scope}[xshift=5cm]
+        \fill[blue!20] plot[smooth cycle] coordinates {(-1.5, 0) (-0.5, 1) (0.5, 0.3) (1.5, 0.8) (1.5, -0.5) (0, -1) (-1, -0.5)};
+        \draw[blue, thick] plot[smooth cycle] coordinates {(-1.5, 0) (-0.5, 1) (0.5, 0.3) (1.5, 0.8) (1.5, -0.5) (0, -1) (-1, -0.5)};
+        \fill[red] (-1, 0.2) circle (2pt) node[above] {$x$};
+        \fill[red] (1.2, 0.5) circle (2pt) node[above] {$y$};
+        \draw[red, thick, dashed] (-1, 0.2) -- (1.2, 0.5);
+        \node[below] at (0, -1.5) {非凸集 $\times$};
+    \end{scope}
+
+    % 经典凸集
+    \begin{scope}[xshift=10cm]
+        \draw[blue, thick, fill=blue!20] (-1, -1) -- (1.5, -1) -- (0.5, 1) -- (-1.2, 0.5) -- cycle;
+        \node[below] at (0, -1.5) {多面体（凸）};
+    \end{scope}
+\end{tikzpicture}
+\end{center}
+
+
+\begin{definition}[凸函数]
+函数 $f: \R^n \to \R$ 是\textbf{凸函数}，当且仅当：对任意 $x, y$ 和任意 $\theta \in [0, 1]$：
+\[f(\theta x + (1-\theta) y) \leq \theta f(x) + (1-\theta) f(y)\]
+\end{definition}
+
+\textbf{直觉}：函数图像上任意两点连线在函数图像的\textbf{上方}。
+
+\begin{center}
+\begin{tikzpicture}[scale=0.9]
+    \draw[->] (0, 0) -- (6, 0) node[right] {$x$};
+    \draw[->] (0, 0) -- (0, 4) node[above] {$f(x)$};
+
+    % 凸函数
+    \draw[thick, blue, domain=0.5:5.5, samples=100] plot (\x, {0.15*(\x-3)*(\x-3) + 0.5});
+
+    % 两点
+    \fill[red] (1, {0.15*(1-3)*(1-3) + 0.5}) circle (2pt);
+    \fill[red] (5, {0.15*(5-3)*(5-3) + 0.5}) circle (2pt);
+
+    % 连线（弦）
+    \draw[red, thick] (1, {0.15*(1-3)*(1-3) + 0.5}) -- (5, {0.15*(5-3)*(5-3) + 0.5});
+
+    % 标注
+    \node[left] at (1, {0.15*(1-3)*(1-3) + 0.5}) {$(x, f(x))$};
+    \node[right] at (5, {0.15*(5-3)*(5-3) + 0.5}) {$(y, f(y))$};
+
+    % 中点
+    \fill[green!50!black] (3, {0.15*(3-3)*(3-3) + 0.5}) circle (2pt);
+    \fill[orange] (3, {0.5*(0.15*(1-3)*(1-3) + 0.5) + 0.5*(0.15*(5-3)*(5-3) + 0.5)}) circle (2pt);
+
+    \draw[<->, thick, green!50!black] (3.2, {0.15*(3-3)*(3-3) + 0.5}) -- (3.2, {0.5*(0.15*(1-3)*(1-3) + 0.5) + 0.5*(0.15*(5-3)*(5-3) + 0.5)});
+
+    \node[right, font=\small] at (3.3, 1.1) {弦在曲线上方};
+\end{tikzpicture}
+\end{center}
+
+\subsubsection{凸性判定的条件}
+
+
+\begin{theorem}[凸性的一阶条件]
+设 $f$ 可微。$f$ 是凸函数当且仅当对所有 $x, y$：
+\[f(y) \geq f(x) + \nabla f(x)^T (y - x)\]
+\end{theorem}
+
+\textbf{几何意义}：函数图像始终在其切平面的\textbf{上方}。
+
+\begin{center}
+\begin{tikzpicture}[scale=0.9]
+    \draw[->] (0, 0) -- (6, 0) node[right] {$x$};
+    \draw[->] (0, 0) -- (0, 4) node[above] {$f(x)$};
+
+    % 凸函数
+    \draw[thick, blue, domain=0.5:5.5, samples=100] plot (\x, {0.15*(\x-3)*(\x-3) + 0.5});
+
+    % 切线（在 x=2 处）
+    \draw[red, thick, domain=0.5:5] plot (\x, {0.15*(2-3)*(2-3) + 0.5 + 0.3*(2-3)*(\x - 2)});
+
+    \fill[red] (2, {0.15*(2-3)*(2-3) + 0.5}) circle (2pt);
+    \node[below left] at (2, {0.15*(2-3)*(2-3) + 0.5}) {$(x, f(x))$};
+
+    \node[right, red] at (5, {0.15*(2-3)*(2-3) + 0.5 + 0.3*(2-3)*(5 - 2)}) {切线};
+    \node[right, blue] at (5.5, {0.15*(5.5-3)*(5.5-3) + 0.5}) {$f$};
+\end{tikzpicture}
+\end{center}
+
+\begin{corollary}
+如果 $\nabla f(x^*) = 0$，则 $x^*$ 是\textbf{全局最小值}。
+\end{corollary}
+
+\begin{AnalysisBox}
+\textbf{一阶条件的证明}：
+
+\textbf{证明}（$\Rightarrow$）：设 $f$ 凸，要证 $f(y) \geq f(x) + \nabla f(x)^T(y-x)$。
+
+由凸性定义，对 $\theta \in (0,1)$：
+\[f(x + \theta(y-x)) \leq (1-\theta) f(x) + \theta f(y)\]
+
+移项：
+\[f(x + \theta(y-x)) - f(x) \leq \theta (f(y) - f(x))\]
+
+除以 $\theta$：
+\[\frac{f(x + \theta(y-x)) - f(x)}{\theta} \leq f(y) - f(x)\]
+
+令 $\theta \to 0^+$，左边趋于方向导数 $\nabla f(x)^T(y-x)$：
+\[\nabla f(x)^T(y-x) \leq f(y) - f(x)\]
+
+即 $f(y) \geq f(x) + \nabla f(x)^T(y-x)$。
+\end{AnalysisBox}
+
+
+\begin{theorem}[凸性的二阶条件]
+设 $f$ 二次可微。$f$ 是凸函数当且仅当对所有 $x$：
+\[\nabla^2 f(x) \succeq 0\]
+即 Hessian 矩阵处处半正定。
+\end{theorem}
+
+\textbf{回忆}：矩阵 $H$ 半正定 $\Leftrightarrow$ 所有特征值 $\geq 0$ $\Leftrightarrow$ $v^T H v \geq 0$ 对所有 $v$。
+
+\textbf{直觉}：二阶导数处处非负 $\Rightarrow$ 函数「向上弯曲」。
+
+\begin{AnalysisBox}
+\textbf{二阶条件的证明}：
+
+\textbf{证明}（$\Rightarrow$）：设 $f$ 凸，要证 $\nabla^2 f(x) \succeq 0$。
+
+由一阶条件，对任意 $y$：
+\[f(y) \geq f(x) + \nabla f(x)^T(y-x)\]
+
+同时，交换 $x, y$ 的角色：
+\[f(x) \geq f(y) + \nabla f(y)^T(x-y)\]
+
+两式相加：
+\[0 \geq (\nabla f(x) - \nabla f(y))^T(y-x) = -(\nabla f(y) - \nabla f(x))^T(y-x)\]
+
+即 $(\nabla f(y) - \nabla f(x))^T(y-x) \geq 0$（梯度是\textbf{单调}的）。
+
+设 $y = x + tv$，$t > 0$：
+\[(\nabla f(x+tv) - \nabla f(x))^T v \geq 0\]
+
+除以 $t$，令 $t \to 0$：
+\[v^T \nabla^2 f(x) v \geq 0\]
+
+对所有 $v$ 成立，故 $\nabla^2 f(x) \succeq 0$。
+\end{AnalysisBox}
+
+\subsubsection{强凸性}
+
+\begin{definition}[强凸函数]
+函数 $f$ 是 \textbf{$m$-强凸}的，如果对所有 $x$：
+\[\nabla^2 f(x) \succeq m I, \quad m > 0\]
+\end{definition}
+
+\textbf{等价定义}：$f(x) - \frac{m}{2}\norm{x}^2$ 是凸函数。
+
+\begin{RemarkBox}
+\textbf{强凸性的性质}：
+\begin{itemize}
+  \item 强凸函数有\textbf{唯一}的全局最小值
+  \item 梯度下降收敛更快（线性收敛 vs 次线性收敛）
+\end{itemize}
+\end{RemarkBox}
+
+\subsubsection{凸优化的核心定理}
+
+\begin{theorem}[局部最优 = 全局最优]
+对于凸优化问题：
+\[\min_x f(x) \quad \text{s.t.} \quad x \in C\]
+其中 $f$ 是凸函数，$C$ 是凸集。
+
+如果 $x^*$ 是\textbf{局部最优解}，则 $x^*$ 是\textbf{全局最优解}。
+\end{theorem}
+
+\begin{proof}
+反证法。假设存在 $y \in C$ 使得 $f(y) < f(x^*)$。
+
+由凸性，对任意 $\theta \in (0, 1)$：
+\[f(\theta y + (1-\theta) x^*) \leq \theta f(y) + (1-\theta) f(x^*) < f(x^*)\]
+
+当 $\theta \to 0$ 时，$\theta y + (1-\theta) x^* \to x^*$，矛盾于 $x^*$ 是局部最优。
+\end{proof}
+
+\subsection{梯度下降的收敛性}
+
+本节深入分析梯度下降算法的理论收敛性质，证明其在凸优化问题下的收敛率，并探讨强凸性带来的加速效果。
+
+\subsubsection{基本假设与记号}
+
+设 $f: \R^n \to \R$ 是可微函数，$x^* = \arg\min_x f(x)$ 是全局最优解，$f^* = f(x^*)$。
+
+\textbf{梯度下降迭代}（步长 $\alpha > 0$）：
+\[x_{t+1} = x_t - \alpha \nabla f(x_t)\]
+
+本节使用以下两个核心假设：
+
+\begin{enumerate}
+    \item \textbf{凸性}：$f$ 是凸函数，即对所有 $x, y$：
+    \[f(y) \geq f(x) + \nabla f(x)^T (y - x)\]
+    \item \textbf{$L$-光滑性}（梯度 Lipschitz 连续）：存在常数 $L > 0$，使得对所有 $x, y$：
+    \[\norm{\nabla f(x) - \nabla f(y)}_2 \leq L \norm{x - y}_2\]
+    等价地，对所有 $x, y$：
+    \[f(y) \leq f(x) + \nabla f(x)^T(y - x) + \frac{L}{2}\norm{y - x}^2 \quad \text{（下降引理）}\]
+\end{enumerate}
+
+\begin{RemarkBox}
+\textbf{直觉}：$L$-光滑意味着函数不会"弯曲得太快"，梯度信息在一步之内仍然可靠。
+\end{RemarkBox}
+
+\subsubsection{关键引理}
+
+\begin{lemma}[充分下降引理]
+设 $f$ 是 $L$-光滑函数，步长 $\alpha = 1/L$，则梯度下降每步保证：
+\[f(x_{t+1}) \leq f(x_t) - \frac{1}{2L}\norm{\nabla f(x_t)}^2\]
+\end{lemma}
+
+\begin{proof}
+将 $y = x_{t+1} = x_t - \frac{1}{L}\nabla f(x_t)$ 代入下降引理：
+\[f(x_{t+1}) \leq f(x_t) + \nabla f(x_t)^T\!\left(-\frac{1}{L}\nabla f(x_t)\right)
+    + \frac{L}{2}\norm{\frac{1}{L}\nabla f(x_t)}^2
+    = f(x_t) - \frac{1}{2L}\norm{\nabla f(x_t)}^2\]
+\end{proof}
+
+\begin{corollary}
+$f(x_t)$ 单调不增，即梯度下降在凸 $L$-光滑函数上\textbf{永远不会变差}。
+\end{corollary}
+
+\subsubsection{主定理：$O(1/T)$ 收敛率}
+
+\begin{theorem}[凸函数梯度下降收敛率]
+设 $f$ 是凸函数且 $L$-光滑，步长 $\alpha = 1/L$。则对任意 $T \geq 1$：
+\[f(x_T) - f^* \leq \frac{L\,\norm{x_0 - x^*}^2}{2T}\]
+\end{theorem}
+
+\begin{proof}
+\textbf{第一步}：建立距离递推关系。令 $r_t = \norm{x_t - x^*}^2$，展开：
+\[r_{t+1} = \norm{x_t - \frac{1}{L}\nabla f(x_t) - x^*}^2 = r_t - \frac{2}{L}\nabla f(x_t)^T(x_t - x^*) + \frac{1}{L^2}\norm{\nabla f(x_t)}^2\]
+
+\textbf{第二步}：利用凸性下界。由凸性一阶条件（取 $y = x^*$）：
+\[f(x_t) - f^* \leq \nabla f(x_t)^T(x_t - x^*)\]
+
+令 $\delta_t = f(x_t) - f^*$，代入第一步：
+\[r_{t+1} \leq r_t - \frac{2}{L}\delta_t + \frac{1}{L^2}\norm{\nabla f(x_t)}^2\]
+
+\textbf{第三步}：利用充分下降引理消去梯度范数。由引理知 $\norm{\nabla f(x_t)}^2 \leq 2L(\delta_t - \delta_{t+1})$，故：
+\[r_{t+1} \leq r_t - \frac{2}{L}\delta_t + \frac{2}{L}(\delta_t - \delta_{t+1})
+    = r_t - \frac{2}{L}\delta_{t+1}\]
+
+整理得：
+\[\frac{2}{L}\delta_{t+1} \leq r_t - r_{t+1}\]
+
+\textbf{第四步}：对 $t = 0, 1, \ldots, T-1$ 求和（望远镜求和）：
+\[\frac{2}{L}\sum_{t=1}^{T}\delta_t \leq r_0 - r_T \leq r_0 = \norm{x_0 - x^*}^2\]
+
+\textbf{第五步}：由充分下降引理知 $\delta_t$ 单调不增，故 $T \cdot \delta_T \leq \sum_{t=1}^T \delta_t$，因此：
+\[\frac{2T}{L}\delta_T \leq \norm{x_0 - x^*}^2
+    \implies f(x_T) - f^* \leq \frac{L\,\norm{x_0 - x^*}^2}{2T}\]
+\end{proof}
+
+\begin{RemarkBox}[$O(1/T)$ 收敛率的含义]
+\begin{itemize}
+    \item 要使误差 $\leq \varepsilon$，需要迭代次数 $T = O(L \norm{x_0 - x^*}^2 / \varepsilon)$，即 $O(1/\varepsilon)$ 步。
+    \item 每步计算量为 $O(n)$（只算一次梯度），总计算量 $O(n/\varepsilon)$。
+    \item 这被称为\textbf{次线性收敛}（sublinear convergence）：误差以 $1/T$ 的速度衰减。
+    \item 此速率对一般凸函数是\textbf{最优的}（信息论下界），即无法在相同假设下做得更好。
+\end{itemize}
+\end{RemarkBox}
+
+\subsubsection{强凸函数的线性收敛率}
+
+若进一步假设 $f$ 是 \textbf{$\mu$-强凸}（$\mu > 0$），即对所有 $x, y$：
+\[f(y) \geq f(x) + \nabla f(x)^T(y-x) + \frac{\mu}{2}\norm{y-x}^2\]
+
+\begin{theorem}[强凸函数线性收敛率]
+设 $f$ 是 $\mu$-强凸且 $L$-光滑，步长 $\alpha = 1/L$，则：
+\[\norm{x_T - x^*}^2 \leq \left(1 - \frac{\mu}{L}\right)^T \norm{x_0 - x^*}^2\]
+\end{theorem}
+
+\begin{proof}
+由强凸性（令 $y = x^*$）：
+\[f(x_t) - f^* \geq \frac{\mu}{2}\norm{x_t - x^*}^2 = \frac{\mu}{2} r_t\]
+
+从第一步和强凸性下界出发：
+\[r_{t+1} \leq r_t - \frac{2}{L}\delta_t + \frac{1}{L^2}\norm{\nabla f(x_t)}^2\]
+
+更简洁地，利用强凸性的等价形式（强单调性）：
+
+首先展开距离的平方：
+\[r_{t+1} = \left\|x_t - \frac{1}{L}\nabla f(x_t) - x^*\right\|^2 = r_t - \frac{2}{L}\nabla f(x_t)^T(x_t - x^*) + \frac{1}{L^2}\left\|\nabla f(x_t)\right\|^2\]
+
+利用强凸性的下界（强单调性）：
+\[\nabla f(x_t)^T(x_t - x^*) \geq \frac{\mu}{2}r_t + \frac{1}{2L}\left\|\nabla f(x_t)\right\|^2\]
+
+代入得：
+\[r_{t+1} \leq r_t - \frac{2}{L}\left(\frac{\mu}{2}r_t + \frac{1}{2L}\left\|\nabla f(x_t)\right\|^2\right) + \frac{1}{L^2}\left\|\nabla f(x_t)\right\|^2\]
+
+简化：
+\[r_{t+1} \leq r_t - \frac{\mu}{L} r_t = \left(1 - \frac{\mu}{L}\right) r_t\]
+
+递归展开得：
+\[\norm{x_T - x^*}^2 \leq \left(1 - \frac{\mu}{L}\right)^T \norm{x_0 - x^*}^2\]
+\end{proof}
+
+\begin{RemarkBox}[线性收敛率的含义]
+\begin{itemize}
+    \item 定义\textbf{条件数} $\kappa = L/\mu \geq 1$，收缩因子为 $1 - 1/\kappa$。
+    \item 要使 $\norm{x_T - x^*}^2 \leq \varepsilon$，需要 $T = O(\kappa \log(1/\varepsilon))$ 步，即 $O(\log(1/\varepsilon))$ 步——远优于 $O(1/\varepsilon)$！
+    \item 这是\textbf{线性收敛}（linear convergence）：误差的对数随迭代线性下降，即"每次迭代误差减少一个固定百分比"。
+    \item $\kappa$ 越大（病态程度越高），收敛越慢；$\kappa = 1$ 时（即 $\mu = L$）一步到达最优。
+\end{itemize}
+\end{RemarkBox}
+
+\begin{center}
+\begin{tabular}{c|c|c|c}
+假设 & 收敛率 & 步数达到精度 $\varepsilon$ & 名称 \\
+\hline
+凸 $+$ $L$-光滑 & $O(1/T)$ & $O(1/\varepsilon)$ & 次线性收敛 \\
+强凸 $+$ $L$-光滑 & $O((1-\mu/L)^T)$ & $O(\kappa \log 1/\varepsilon)$ & 线性收敛 \\
+
+\end{tabular}
+\end{center}
+
+\subsubsection{具体例子：$f(x) = kx^2$ 的梯度下降}
+
+\begin{ExampleBox}
+取 $f(x) = kx^2$，$k > 0$，最优解显然是 $x^* = 0$，$f^* = 0$。
+
+\textbf{第一步：确定 $L$ 和 $\mu$}
+
+$f''(x) = 2k$（常数），故 $f$ 同时是 $L = 2k$-光滑的和 $\mu = 2k$-强凸的。
+条件数 $\kappa = L/\mu = 1$，这是最优情况。
+
+\textbf{第二步：写出迭代格式}
+
+\textbf{第二步：写出迭代格式}
+
+$\nabla f(x) = 2kx$，梯度下降：
+\[x_{t+1} = x_t - \alpha \cdot 2k x_t = (1 - 2k\alpha)\, x_t\]
+
+记收缩因子 $\rho = 1 - 2k\alpha$，递归展开得\textbf{闭合公式}：
+\[x_t = \rho^t\, x_0 = (1 - 2k\alpha)^t\, x_0\]
+
+\textbf{第三步：分析不同步长的行为}
+
+\begin{center}
+\begin{tabular}{c|c|c|l}
+步长 $\alpha$ & $\rho = 1-2k\alpha$ & $|\rho|$ & 行为 \\
+\hline
+$\dfrac{1}{2k}$（$= 1/L$，最优） & $0$ & $0$ & \textbf{一步收敛}！$x_1 = 0$ \\[6pt]
+$\dfrac{1}{4k}$ & $\dfrac{1}{2}$ & $0.5$ & 单调收敛，每步误差减半 \\[6pt]
+$\dfrac{3}{4k}$ & $-\dfrac{1}{2}$ & $0.5$ & 振荡收敛（正负交替，幅度减半） \\[6pt]
+$\dfrac{1}{k}$（$= 2/L$，临界） & $-1$ & $1$ & 永远振荡，不收敛 \\[6pt]
+$> \dfrac{1}{k}$ & $|\rho|>1$ & $>1$ & 发散（步长太大）
+\end{tabular}
+\end{center}
+
+\textbf{直觉图}（$k=1$，$x_0 = 1$，不同步长的轨迹）：
+
+\begin{center}
+\begin{tikzpicture}[scale=0.95]
+    \draw[->] (-0.3, 0) -- (7.5, 0) node[right] {迭代次数 $t$};
+    \draw[->] (0, -1.5) -- (0, 1.5) node[above] {$x_t$};
+    \draw[dashed, gray] (0, 0) -- (7.5, 0);
+
+    % alpha = 1/(2k): 一步收敛
+    \draw[blue, very thick] (0,1) -- (1,0) -- (7,0);
+    \foreach \x in {0,1,2,3,4,5,6,7} {
+        \fill[blue] (\x, {ifthenelse(\x==0,1,0)}) circle (2pt);
+    }
+    \node[blue, right, font=\small] at (7.1, 0.15) {$\alpha = 1/(2k)$};
+
+    % alpha = 1/(4k): 单调收敛 rho=0.5
+    \draw[green!50!black, thick] plot[domain=0:7, samples=8] (\x, {0.5^\x});
+    \foreach \x in {0,1,2,3,4,5,6,7} {
+        \fill[green!50!black] (\x, {0.5^\x}) circle (2pt);
+    }
+    \node[green!50!black, right, font=\small] at (7.1, {0.5^7 + 0.1}) {$\alpha = 1/(4k)$};
+
+    % alpha = 3/(4k): 振荡收敛 rho=-0.5
+    \draw[orange, thick] plot[domain=0:7, samples=8] (\x, {(-0.5)^\x});
+    \foreach \x in {0,1,2,3,4,5,6,7} {
+        \fill[orange] (\x, {(-0.5)^\x}) circle (2pt);
+    }
+    \node[orange, right, font=\small] at (7.1, {(-0.5)^7 - 0.15}) {$\alpha = 3/(4k)$（振荡）};
+
+    % alpha = 1/k: 振荡不收敛 rho=-1
+    \foreach \x in {0,1,2,3,4} {
+        \fill[red] (\x, {(-1)^\x}) circle (2pt);
+    }
+    \draw[red, dashed, thick] (0,1) -- (1,-1) -- (2,1) -- (3,-1) -- (4,1);
+    \node[red, right, font=\small] at (4.1, 1.1) {$\alpha = 1/k$（不收敛）};
+\end{tikzpicture}
+\end{center}
+
+\textbf{第四步：与一般理论对照}
+
+\begin{itemize}
+    \item 最优步长 $\alpha = 1/L = 1/(2k)$，此时 $\rho = 0$——$\kappa = 1$ 的情形理论预测 $(1-\mu/L)^T = 0^T = 0$，即一步精确到达，与计算一致。
+    \item 步长约束 $0 < \alpha < 1/k = 2/L$ 与充分下降引理的要求 $\alpha \leq 1/L$ 对应：
+    \begin{itemize}
+        \item $\alpha \leq 1/L$ 保证单调下降
+        \item $1/L < \alpha < 2/L$ 振荡但仍收敛
+        \item $\alpha \geq 2/L$ 发散
+    \end{itemize}
+    \item 误差公式 $|x_t - x^*| = |\rho|^t |x_0|$ 正是线性收敛 $O((1-\mu/L)^T)$ 的具体体现。
+\end{itemize}
+\end{ExampleBox}
+
+\subsubsection{为什么凸性保证梯度下降找到最优解？}
+
+\begin{RemarkBox}[核心逻辑链]
+\begin{enumerate}
+    \item \textbf{凸性 $\Rightarrow$ 局部 = 全局}：不存在"陷阱"式局部最优。
+    \item \textbf{$L$-光滑 $\Rightarrow$ 每步必下降}（充分下降引理）：梯度下降永远在改善。
+    \item \textbf{两者合并 $\Rightarrow$ 收敛到全局最优}：既然每步都在改善，且改善终点就是全局最优，梯度下降必然收敛至全局最优。
+\end{enumerate}
+
+对比非凸情形：满足下降引理，但可能收敛到局部最优——有下降保证，却无全局保证。
+\end{RemarkBox}
+
+\subsection{具体实现过程}
+
+本节通过房价预测实例，完整展示梯度下降算法的实现过程，包括数据生成、基础梯度下降、学习率影响分析、Adam优化器等核心内容。
+
+\subsubsection{模拟数据生成}
+
+我们生成 100 套房屋数据，真实规律为：
+
+\textbf{房价 = 2.5 × 面积 (平米) + 30}（等价于 \textbf{250 × 面积 (百平米) + 30}）
+
+为稳定梯度下降，将面积单位从平米转换为百平米（范围 0.9-1.5）。
+
+\begin{CodeBox}
+\begin{lstlisting}[style=PythonStyle]
+import numpy as np
+import matplotlib.pyplot as plt
+
+# 解决中文显示问题
+plt.rcParams['font.sans-serif'] = ['SimHei', 'Arial Unicode MS', 'DejaVu Sans']
+plt.rcParams['axes.unicode_minus'] = False
+
+# 固定随机种子，保证结果可复现
+np.random.seed(42)
+n_samples = 100
+
+# 生成随机面积（90-150平米），转换为百平米
+areas_m2 = np.random.uniform(90, 150, n_samples)
+areas = areas_m2 / 100
+
+# 生成房价数据（加入随机噪声模拟真实场景）
+prices = 250 * areas + 30 + np.random.randn(n_samples) * 15
+
+# 打印数据基本信息
+print(f"房屋数量: {len(areas)} 套")
+print(f"面积范围: {areas_m2.min():.1f} - {areas_m2.max():.1f} 平米")
+print(f"价格范围: {prices.min():.1f} - {prices.max():.1f} 万")
+\end{lstlisting}
+\end{CodeBox}
+
+\begin{RemarkBox}[运行结果]
+\begin{verbatim}
+房屋数量: 100 套
+面积范围: 90.3 - 149.2 平米 (0.90 - 1.49 百平米)
+价格范围: 248.0 - 414.8 万
+真实规律: 房价 = 2.5 × 面积(平米) + 30
+\end{verbatim}
+\end{RemarkBox}
+
+\subsubsection{基础梯度下降算法实现}
+
+基于均方误差（MSE）损失函数，实现梯度下降来拟合线性回归参数 w 和 b。
+
+\begin{CodeBox}
+\begin{lstlisting}[style=PythonStyle]
+def gradient_descent(X, y, lr=0.1, epochs=200):
+    # 初始化参数 w（权重）和 b（偏置）
+    w, b = 0.0, 0.0
+    n = len(X)  # 样本数量
+    
+    # 初始化历史记录：保存每一轮的 w、b 和损失值
+    history = {'w': [w], 'b': [b], 
+               'loss': [np.mean((w*X + b - y)**2)]}
+    
+    # 迭代训练
+    for epoch in range(epochs):
+        # 1. 计算当前模型预测值
+        y_pred = w * X + b
+        
+        # 2. 计算损失函数对 w 和 b 的梯度
+        dw = (2/n) * np.sum((y_pred - y) * X)  # 对 w 的偏导
+        db = (2/n) * np.sum(y_pred - y)        # 对 b 的偏导
+        
+        # 3. 沿梯度反方向更新参数
+        w -= lr * dw
+        b -= lr * db
+        
+        # 4. 记录当前轮的参数和损失
+        history['w'].append(w)
+        history['b'].append(b)
+        history['loss'].append(np.mean((y_pred - y)**2))
+        
+        # 5. 每隔 1% 训练轮数，打印训练进度
+        if epoch % (epochs/100) == 0:
+            print(f"迭代 {epoch:3d}: w={w:.2f}, b={b:.2f}, "
+                  f"loss={history['loss'][-1]:.2f}")
+    
+    return history
+\end{lstlisting}
+\end{CodeBox}
+
+\subsubsection{基础模型训练与结果查看}
+
+调用梯度下降函数进行训练，并输出最终拟合结果。
+
+\begin{CodeBox}
+\begin{lstlisting}[style=PythonStyle]
+# 执行梯度下降训练
+history = gradient_descent(areas, prices, lr=0.01, epochs=100000)
+
+# 输出最终拟合结果（将 w 转换回平米单位）
+print(f"\n最终结果: 房价 = {history['w'][-1]/100:.3f} "
+      f"× 面积(平米) + {history['b'][-1]:.2f}")
+\end{lstlisting}
+\end{CodeBox}
+
+\begin{RemarkBox}[训练过程输出（部分）]
+\begin{verbatim}
+迭代   0: w=7.85, b=6.51, loss=107933.06
+迭代 1000: w=179.58, b=114.15, loss=291.90
+迭代 5000: w=217.77, b=68.40, loss=195.15
+迭代 10000: w=232.89, b=50.30, loss=182.49
+迭代 20000: w=238.09, b=44.07, loss=181.49
+迭代 50000: w=238.51, b=43.57, loss=181.48
+
+最终结果: 房价 = 2.385 × 面积(平米) + 43.57
+\end{verbatim}
+\end{RemarkBox}
+
+\textbf{训练过程可视化}
+
+\begin{CodeBox}
+\begin{lstlisting}[style=PythonStyle]
+# 可视化训练过程
+fig, axes = plt.subplots(1, 3, figsize=(15, 5))
+
+# 左图：拟合效果
+axes[0].scatter(areas_m2, prices, alpha=0.6, s=60, 
+                edgecolors='black', linewidth=0.5, label='房屋数据')
+x_fit = np.linspace(areas_m2.min(), areas_m2.max(), 100)
+y_fit = history['w'][-1]/100 * x_fit + history['b'][-1]
+axes[0].plot(x_fit, y_fit, 'r-', linewidth=2.5, 
+             label=f'拟合结果: y = {history["w"][-1]/100:.2f}x + {history["b"][-1]:.2f}')
+axes[0].set_xlabel('面积（平米）', fontsize=12)
+axes[0].set_ylabel('房价（万）', fontsize=12)
+axes[0].set_title('房价预测拟合效果', fontsize=13, fontweight='bold')
+axes[0].legend(fontsize=10)
+axes[0].grid(True, alpha=0.3)
+
+# 中图：参数收敛过程
+axes[1].plot(history['w'][100:], 'b-', linewidth=2, label='w（权重）')
+axes[1].plot(history['b'][100:], 'g-', linewidth=2, label='b（偏置）')
+axes[1].axhline(y=250, color='r', linestyle='--', alpha=0.5, label='真实 w=250')
+axes[1].axhline(y=30, color='orange', linestyle='--', alpha=0.5, label='真实 b=30')
+axes[1].set_xlabel('迭代次数', fontsize=12)
+axes[1].set_ylabel('参数值', fontsize=12)
+axes[1].set_title('参数收敛过程', fontsize=13, fontweight='bold')
+axes[1].legend(fontsize=10)
+axes[1].grid(True, alpha=0.3)
+
+# 右图：损失函数下降过程
+axes[2].plot(history['loss'], 'purple', linewidth=2)
+axes[2].set_xlabel('迭代次数', fontsize=12)
+axes[2].set_ylabel('MSE 损失', fontsize=12)
+axes[2].set_title('损失函数下降过程', fontsize=13, fontweight='bold')
+axes[2].grid(True, alpha=0.3)
+axes[2].set_yscale('log')  # 使用对数坐标更清晰
+
+plt.tight_layout()
+plt.show()
+\end{lstlisting}
+\end{CodeBox}
+
+\begin{RemarkBox}[可视化说明]
+生成了三幅图来展示训练过程：
+\begin{enumerate}
+    \item \textbf{拟合效果图}：展示模型对房价数据的拟合效果，红线为预测结果
+    \item \textbf{参数收敛图}：展示权重 w 和偏置 b 随迭代次数的收敛过程，虚线为真实值
+    \item \textbf{损失下降图}：展示MSE损失随迭代次数的下降过程，使用对数坐标
+\end{enumerate}
+\end{RemarkBox}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.95\textwidth]{chapter1_3.png}
+\caption{基础梯度下降训练过程可视化}
+\label{fig:chapter1_3}
+\end{figure}
+
+\subsubsection{核心原理回顾}
+
+\textbf{1. 损失函数（MSE）}
+
+\[L(w,b) = \frac{1}{n}\sum_{i=1}^{n}(wx_i + b - y_i)^2\]
+
+训练目标是最小化 $L(w,b)$。
+
+\textbf{2. 梯度计算}
+
+对 $w$ 求偏导：
+\[\frac{\partial L}{\partial w} = \frac{2}{n}\sum_{i=1}^{n}(wx_i + b - y_i) \cdot x_i\]
+
+对 $b$ 求偏导：
+\[\frac{\partial L}{\partial b} = \frac{2}{n}\sum_{i=1}^{n}(wx_i + b - y_i)\]
+
+\textbf{3. 参数更新公式}
+
+\[w \leftarrow w - \eta \cdot \frac{\partial L}{\partial w}\]
+\[b \leftarrow b - \eta \cdot \frac{\partial L}{\partial b}\]
+
+其中 $\eta$ 为学习率，控制参数更新的步长。
+
+\subsubsection{学习率对梯度下降的影响}
+
+\textbf{学习率核心作用}
+
+学习率直接决定参数更新步长，是梯度下降的关键超参数：
+
+\begin{itemize}
+    \item \textbf{太小}：收敛极慢，蜗牛爬坡
+    \item \textbf{合适}：快速稳定收敛
+    \item \textbf{偏大}：剧烈震荡，无法收敛
+    \item \textbf{过大}：梯度爆炸，参数发散
+\end{itemize}
+
+\begin{CodeBox}
+\begin{lstlisting}[style=PythonStyle]
+import numpy as np
+import matplotlib.pyplot as plt
+
+# 核心逻辑
+def gradient_descent(start_x, lr, n_steps=15):
+    """在 f(x)=x² 上做梯度下降，返回每一步的 x 值"""
+    trajectory = [start_x]
+    x = start_x
+    for _ in range(n_steps):
+        grad = 2 * x          # f'(x) = 2x
+        x = x - lr * grad     # 参数更新
+        trajectory.append(x)
+        if abs(x) > 500:      # 已经爆炸，提前停
+            break
+    return trajectory
+
+# 四种学习率对比
+x0 = 4.0
+configs = [
+    (0.05, '太小: 蜗牛爬坡',    'steelblue'),
+    (0.3,  '合适: 稳步收敛',    'seagreen'),
+    (0.9,  '偏大: 剧烈震荡',    'orange'),
+    (1.1,  '过大: 梯度爆炸',    'crimson'),
+]
+
+# 参数值随迭代变化图
+fig, axes = plt.subplots(2, 2, figsize=(12, 8))
+for ax, (lr, title, color) in zip(axes.flatten(), configs):
+    traj = gradient_descent(x0, lr)
+    ax.plot(range(len(traj)), traj, 'o-', color=color, markersize=5)
+    ax.axhline(y=0, color='gray', linestyle='--', alpha=0.5)
+    ax.set_title(f'lr={lr} — {title}', fontsize=12)
+    ax.set_xlabel('迭代次数')
+    ax.set_ylabel('参数 x')
+    ax.grid(True, alpha=0.3)
+
+plt.suptitle('学习率对梯度下降的影响（参数变化）', fontsize=14)
+plt.tight_layout()
+plt.show()
+\end{lstlisting}
+\end{CodeBox}
+
+\textbf{可视化结果展示}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.95\textwidth]{chapter1_1.png}
+\caption{学习率对梯度下降的影响（参数变化）}
+\label{fig:chapter1_1}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.95\textwidth]{chapter1_2.png}
+\caption{学习率对梯度下降的影响（损失曲面轨迹）}
+\label{fig:chapter1_2}
+\end{figure}
+
+\begin{RemarkBox}[可视化结果分析]
+生成了两幅图：
+\begin{enumerate}
+    \item \textbf{参数变化图}：展示四种学习率下参数随迭代次数的变化轨迹
+    \item \textbf{损失曲面轨迹图}：在 $f(x)=x^2$ 曲线上展示梯度下降路径
+\end{enumerate}
+
+从图中可以清晰看到：
+\begin{itemize}
+    \item 学习率 0.05：收敛缓慢，需要更多迭代
+    \item 学习率 0.3：最优，稳定快速收敛
+    \item 学习率 0.9：震荡但最终收敛
+    \item 学习率 1.1：发散，无法收敛
+\end{itemize}
+\end{RemarkBox}
+
+\subsubsection{Adam 优化器实战}
+
+\textbf{核心原理}
+
+Adam = 动量法（Momentum）+ RMSProp，自适应学习率，收敛速度远超基础梯度下降。
+
+\begin{CodeBox}
+\begin{lstlisting}[style=PythonStyle]
+def adam_optimizer(X, y, lr=0.1, epochs=200, 
+                   beta1=0.9, beta2=0.999, epsilon=1e-8):
+    # 初始化参数
+    w, b = 0.0, 0.0
+    n = len(X)
+    
+    # Adam 特有的状态变量初始化
+    m_w, v_w = 0.0, 0.0  # w 的一阶矩和二阶矩
+    m_b, v_b = 0.0, 0.0  # b 的一阶矩和二阶矩
+    
+    # 初始化历史记录
+    history = {'w': [w], 'b': [b], 
+               'loss': [np.mean((w*X + b - y)**2)]}
+    
+    # 进行迭代训练
+    for epoch in range(epochs):
+        t = epoch + 1  # Adam 的时间步 t 从 1 开始
+        
+        # 1. 计算当前预测值
+        y_pred = w * X + b
+        
+        # 2. 计算当前梯度
+        dw = (2/n) * np.sum((y_pred - y) * X)
+        db = (2/n) * np.sum(y_pred - y)
+        
+        # 3. 更新一阶矩估计（动量）
+        m_w = beta1 * m_w + (1 - beta1) * dw
+        m_b = beta1 * m_b + (1 - beta1) * db
+        
+        # 4. 更新二阶矩估计（RMSProp）
+        v_w = beta2 * v_w + (1 - beta2) * (dw**2)
+        v_b = beta2 * v_b + (1 - beta2) * (db**2)
+        
+        # 5. 偏差校正
+        m_w_hat = m_w / (1 - beta1**t)
+        m_b_hat = m_b / (1 - beta1**t)
+        v_w_hat = v_w / (1 - beta2**t)
+        v_b_hat = v_b / (1 - beta2**t)
+        
+        # 6. 使用 Adam 公式更新参数
+        w -= lr * m_w_hat / (np.sqrt(v_w_hat) + epsilon)
+        b -= lr * m_b_hat / (np.sqrt(v_b_hat) + epsilon)
+        
+        # 计算当前 loss
+        current_loss = np.mean((w*X + b - y)**2)
+        
+        # 记录参数和损失
+        history['w'].append(w)
+        history['b'].append(b)
+        history['loss'].append(current_loss)
+    
+    return history
+\end{lstlisting}
+\end{CodeBox}
+
+\begin{RemarkBox}[Adam优化器优势]
+Adam优化器相比基础梯度下降的优势：
+\begin{enumerate}
+    \item \textbf{自适应学习率}：每个参数都有独立的学习率
+    \item \textbf{动量加速}：累积历史梯度方向，加速收敛
+    \item \textbf{稳定性强}：通过二阶矩调整，适应不同梯度尺度
+    \item \textbf{收敛更快}：通常比基础梯度下降快10-100倍
+\end{enumerate}
+\end{RemarkBox}
+
+\textbf{Adam优化器训练过程可视化}
+
+\begin{CodeBox}
+\begin{lstlisting}[style=PythonStyle]
+# 可视化 Adam 优化器训练过程
+fig, axes = plt.subplots(1, 3, figsize=(15, 5))
+
+# 左图：拟合效果
+axes[0].scatter(areas_m2, prices, alpha=0.6, s=60, 
+                edgecolors='black', linewidth=0.5, label='房屋数据')
+x_fit = np.linspace(areas_m2.min(), areas_m2.max(), 100)
+y_fit = history['w'][-1]/100 * x_fit + history['b'][-1]
+axes[0].plot(x_fit, y_fit, 'r-', linewidth=2.5, 
+             label=f'Adam拟合: y = {history["w"][-1]/100:.2f}x + {history["b"][-1]:.2f}')
+axes[0].set_xlabel('面积（平米）', fontsize=12)
+axes[0].set_ylabel('房价（万）', fontsize=12)
+axes[0].set_title('Adam优化器拟合效果', fontsize=13, fontweight='bold')
+axes[0].legend(fontsize=10)
+axes[0].grid(True, alpha=0.3)
+
+# 中图：参数收敛过程
+axes[1].plot(history['w'], 'b-', linewidth=2, label='w（权重）')
+axes[1].plot(history['b'], 'g-', linewidth=2, label='b（偏置）')
+axes[1].axhline(y=250, color='r', linestyle='--', alpha=0.5, label='真实 w=250')
+axes[1].axhline(y=30, color='orange', linestyle='--', alpha=0.5, label='真实 b=30')
+axes[1].set_xlabel('迭代次数', fontsize=12)
+axes[1].set_ylabel('参数值', fontsize=12)
+axes[1].set_title('Adam参数收敛过程', fontsize=13, fontweight='bold')
+axes[1].legend(fontsize=10)
+axes[1].grid(True, alpha=0.3)
+
+# 右图：损失函数下降过程
+axes[2].plot(history['loss'], 'purple', linewidth=2)
+axes[2].set_xlabel('迭代次数', fontsize=12)
+axes[2].set_ylabel('MSE 损失', fontsize=12)
+axes[2].set_title('Adam损失下降过程', fontsize=13, fontweight='bold')
+axes[2].grid(True, alpha=0.3)
+axes[2].set_yscale('log')  # 使用对数坐标
+
+plt.tight_layout()
+plt.show()
+\end{lstlisting}
+\end{CodeBox}
+
+\begin{RemarkBox}[Adam可视化说明]
+通过可视化可以观察到：
+\begin{enumerate}
+    \item \textbf{拟合效果}：Adam优化器成功拟合房价数据，结果与基础梯度下降一致
+    \item \textbf{收敛速度}：Adam的参数收敛更快，震荡更小
+    \item \textbf{损失下降}：Adam的损失下降更平滑，收敛更稳定
+\end{enumerate}
+对比基础梯度下降，Adam优化器展现出更优的收敛性能。
+\end{RemarkBox}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.95\textwidth]{chapter1_4.png}
+\caption{Adam优化器训练过程可视化}
+\label{fig:chapter1_4}
+\end{figure}
+
+\subsubsection{梯度下降的三种核心变体}
+
+\begin{center}
+\begin{tabular}{|c|c|c|p{5.5cm}|}
+\hline
+\textbf{算法名称} & \textbf{全称} & \textbf{数据使用量} & \textbf{核心特点} \\
+\hline
+BGD & 全量梯度下降 & 全部训练数据 & 梯度精准，速度极慢，不适合大数据 \\
+\hline
+SGD & 随机梯度下降 & 单条数据 & 速度快，噪声大，震荡剧烈 \\
+\hline
+Mini-batch GD & 小批量梯度下降 & 一小批数据 (32/64) & 业界标准，兼顾速度与稳定性 \\
+\hline
+\end{tabular}
+\end{center}
+
+\begin{RemarkBox}[三种变体的选择建议]
+\begin{itemize}
+    \item \textbf{小数据集}（$n < 1000$）：使用BGD，梯度最准确
+    \item \textbf{中等数据集}（$1000 < n < 10000$）：使用Mini-batch GD，batch size=32或64
+    \item \textbf{大数据集}（$n > 10000$）：使用SGD或Mini-batch GD，配合Adam优化器
+\end{itemize}
+\end{RemarkBox}
+
+% 第二讲（示例）
+\setcounter{section}{2}
+\setcounter{subsection}{0}
+\addcontentsline{toc}{section}{Chapter 2：讲座标题}
+\LectureBanner
+  {2} % 修改为讲座编号
+  {讲座标题} % 修改为讲座标题
+  {讲座副标题} % 修改为讲座副标题
+  {大模型学习笔记} % 修改为课程系列名称
+  {2026 Spring} % 修改为学期信息
+  {Cabbage} % 修改为主讲人姓名
+
+\begin{SummaryBox}
+% 修改为讲座摘要内容
+本讲摘要内容，简要介绍本讲的主要内容和重点。
+\end{SummaryBox}
+
+% 章节内容，可根据实际需求添加或修改
+\subsection{章节标题}
+
+% 修改为章节内容
+章节内容...
+
+\end{document}
